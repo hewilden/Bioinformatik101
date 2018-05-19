@@ -1,2 +1,2 @@
 # Bioinformatik101
-Repository für Übungsaufgaben
+Repository für Übungsaufgaben und Rosalind-Probleme

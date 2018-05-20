@@ -1,7 +1,7 @@
 #This program gives all possible ORFs of a DNA Sequence
 
 # fasta = input("Enter fasta file name: ")
-fasta = "rosalind_orf.txt"
+fasta = "rosalind_orf-3.txt"
 fh = open(fasta, "r")
 
 line = fh.readline()
@@ -38,7 +38,7 @@ print("DNA-Sequence: ")
 print(DNA_seq)
 print(DNA_rc)
 
-#translate both mRNAs:
+#transcribe both to mRNAs:
 RNA_seq = ""
 RNA_rc = ""
 def RNA_Transcript(sequence):
@@ -61,7 +61,7 @@ print("RNA-Sequence: ")
 print(RNA_seq)
 print(RNA_rc)
 
-#Find motive AUG:
+#Find motif AUG:
 def find_AUG(sequence):
     AUG = []
     for i in range(len(sequence)):
@@ -69,11 +69,53 @@ def find_AUG(sequence):
             AUG.append(i)
     return AUG
 
-print(find_AUG(RNA_seq))
-print(find_AUG(RNA_rc))
+print("Start RNA_seq: ", find_AUG(RNA_seq))
+print("Start RNA_rc ", find_AUG(RNA_rc))
 print()
 
-#definiere ORF als String
+#translate function
+def translate(sequence, key):
+    AA_Seq = ""
+    codeDict = {"GGG": "G", "GGA": "G", "GGC": "G", "GGU": "G",
+                "GAG": "E", "GAA": "E", "GAC": "D", "GAU": "D",
+                "GCG": "A", "GCA": "A", "GCC": "A", "GCU": "A",
+                "GUG": "V", "GUA": "V", "GUC": "V", "GUU": "V",
+                "AGG": "R", "AGA": "R", "AGC": "S", "AGU": "S",
+                "AAG": "K", "AAA": "K", "AAC": "N", "AAU": "N",
+                "ACG": "T", "ACA": "T", "ACC": "T", "ACU": "T",
+                "AUG": "M", "AUA": "I", "AUC": "I", "AUU": "I",
+                "CGG": "R", "CGA": "R", "CGC": "R", "CGU": "R",
+                "CAG": "Q", "CAA": "Q", "CAC": "H", "CAU": "H",
+                "CCG": "P", "CCA": "P", "CCC": "P", "CCU": "P",
+                "CUG": "L", "CUA": "L", "CUC": "L", "CUU": "L",
+                "UGG": "W", "UGA": "Stop", "UGC": "C", "UGU": "C",
+                "UAG": "Stop", "UAA": "Stop", "UAC": "Y", "UAU": "Y",
+                "UCG": "S", "UCA": "S", "UCC": "S", "UCU": "S",
+                "UUG": "L", "UUA": "L", "UUC": "F", "UUU": "F"}
+    i = key
+    while i in range(len(sequence)):
+        triplett = (sequence[i:i + 3])
+        #if codeDict[triplett] == "Stop":
+         #   break
+        if len(triplett ) == 3:
+            AA_Seq += (codeDict[triplett])
+        i = i + 3
+    return AA_Seq
+
+
+'''
+print("Translations: ")
+print(translate(RNA_seq, 0))
+print(translate(RNA_seq, 1))
+print(translate(RNA_seq, 2))
+print(translate(RNA_rc, 0))
+print(translate(RNA_rc, 1))
+print(translate(RNA_rc, 2))
+print()
+'''
+
+#definiere ORF als String       PROBLEM: Bereich M bis Ende der Sequenz, weil: Orf MUSS mit STOP enden!
+                                    # => Lösung: Integriere "Stop" und sortiere andere aus!
 def ORF(sequence, Start):
     ORF = ""
     codeDict = {"GGG": "G", "GGA": "G", "GGC": "G", "GGU": "G",
@@ -93,9 +135,12 @@ def ORF(sequence, Start):
                 "UCG": "S", "UCA": "S", "UCC": "S", "UCU": "S",
                 "UUG": "L", "UUA": "L", "UUC": "F", "UUU": "F"}
     i = Start
-    while i in range(Start, len(sequence)-Start):
+    while i in range(Start, len(sequence)):
         triplett = (sequence[i:i + 3])
-        if codeDict[triplett] == "Stop":
+        if len(triplett) != 3:
+            break
+        elif codeDict[triplett] == "Stop":
+            ORF += (codeDict[triplett])
             break
         ORF += (codeDict[triplett])
         i = i + 3
@@ -113,18 +158,24 @@ def give_ORFs(sequence):
 ORF_seq = give_ORFs(RNA_seq)
 ORF_rc = give_ORFs(RNA_rc)
 
+
+
+
 all_ORFs = ORF_rc+ORF_seq
 
-#remove duplicates:
+print("All ORFs: ", all_ORFs)
+
+#remove duplicates and strip stop:
 all_ORFs_final = []
 for ORF in all_ORFs:
-    if ORF in all_ORFs_final:
+    if ORF.strip("Stop") in all_ORFs_final:
         pass
     else:
-        all_ORFs_final.append(ORF)
+        if ORF[-4:] == "Stop":
+            all_ORFs_final.append(ORF[0:len(ORF)-4])
 
 
-print(all_ORFs_final)
+print("all Orfs with a Stop: ", all_ORFs_final)
 
 for i in all_ORFs_final:
     print(i)

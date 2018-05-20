@@ -3,6 +3,7 @@ print("This Program converts RNA-Sequence in Amino Acid Chain")
 # sequence = input("Enter RNA-Sequence: ")
 
 sequence = "AACGACUUAUAUAGUUGCUGGUCUAAGUAGUUGCGCGGGGGGUACCCUGCGCAAAAAUCUCCGUAGCGGUGGGCCGUUACUAAUCUAUCUGUAAAAAAAUGGCGGCGCCACUCUCUGCCUUCAGACUGGCAGUCGGGGCAUGUUUCAGCCGAGGACCACUCCAAAGUCGUGGAGGGCGCGGACAACUAAUGCGAGCUAAACGGGAAGGUCGUCGGUCGGCAACACGACCAACUCCAGCGCUUCU"
+#sequence = input("Enter RNA: ")
 
 codeDict = {"GGG":"G", "GGA":"G", "GGC":"G", "GGU":"G",
             "GAG":"E", "GAA":"E", "GAC":"D", "GAU":"D",
@@ -25,16 +26,11 @@ codeDict = {"GGG":"G", "GGA":"G", "GGC":"G", "GGU":"G",
 
 length = (len(sequence))
 i = 0
-k = 1
-j = 2
-while (i < length-2):
-    triplett = (sequence[i:i+3])
-#    print("{} = {}".format(triplett, codeDict[triplett]))
-    i = i + 3
 
-i=0
 print("Amino Acid Sequence: ", end="")
 while (i < length-2):
     triplett = (sequence[i:i+3])
+    if (codeDict[triplett] == "Stop"):
+        break
     print(codeDict[triplett],end="")
     i=i+3

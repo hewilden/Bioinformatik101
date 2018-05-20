@@ -1,6 +1,22 @@
 #This program gives all possible ORFs of a DNA Sequence
 
-DNA_seq = input("Enter DNA strand: ").srip()
+# fasta = input("Enter fasta file name: ")
+fasta = "rosalind_orf.txt"
+fh = open(fasta, "r")
+
+line = fh.readline()
+meta = ""       #Label of Sequence, starting with >
+DNA_seq = ""   #Actual Sequence
+
+while line:
+    line = line.rstrip("\n")    #removes newline char
+    if ">" in line:
+        meta = line
+    else:
+        DNA_seq += line
+    line = fh.readline()
+
+print(meta)
 
 # DNA_seq = "AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG"
 DNA_rc = ""
@@ -57,9 +73,9 @@ print(find_AUG(RNA_seq))
 print(find_AUG(RNA_rc))
 print()
 
-#definiere ORF
+#definiere ORF als String
 def ORF(sequence, Start):
-    ORF = []
+    ORF = ""
     codeDict = {"GGG": "G", "GGA": "G", "GGC": "G", "GGU": "G",
                 "GAG": "E", "GAA": "E", "GAC": "D", "GAU": "D",
                 "GCG": "A", "GCA": "A", "GCC": "A", "GCU": "A",
@@ -81,20 +97,34 @@ def ORF(sequence, Start):
         triplett = (sequence[i:i + 3])
         if codeDict[triplett] == "Stop":
             break
-        ORF.append(codeDict[triplett])
+        ORF += (codeDict[triplett])
         i = i + 3
-    return ORF
+    return ORF          #orf is a defined AA Sequence STRING
 
-ORF_seq = []
-for Start in find_AUG(RNA_seq):
-    ORF_seq = ORF(RNA_seq, Start)
-    for AA in ORF_seq:
-        print(AA, end="")
-    print()
 
-ORF_rc = []
-for Start in find_AUG(RNA_rc):
-    ORF_rc = ORF(RNA_rc, Start)
-    for AA in ORF_rc:
-        print(AA, end="")
-    print()
+# create list of orfs:
+def give_ORFs(sequence):
+    ORF_list = []
+    for Start in find_AUG(sequence):
+        if len(ORF(sequence, Start))>0:
+            ORF_list.append(ORF(sequence, Start))   #fügt AA Sequence zur LISTE der ORF
+    return ORF_list
+
+ORF_seq = give_ORFs(RNA_seq)
+ORF_rc = give_ORFs(RNA_rc)
+
+all_ORFs = ORF_rc+ORF_seq
+
+#remove duplicates:
+all_ORFs_final = []
+for ORF in all_ORFs:
+    if ORF in all_ORFs_final:
+        pass
+    else:
+        all_ORFs_final.append(ORF)
+
+
+print(all_ORFs_final)
+
+for i in all_ORFs_final:
+    print(i)

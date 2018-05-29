@@ -1,9 +1,9 @@
 #Pattern to number
-pattern = "AGT"
+pattern = "AAA"
 
 number = ""
 dec_number = 0
-dec_index = 0
+dec_index = -1
 
 for i in range(len(pattern)):  #i startet bei 0, geht bis len-1
     if pattern[i] == "A":

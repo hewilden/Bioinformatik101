@@ -2,6 +2,8 @@
 # hab ich was missverstanden, denn DIE LÖSUNG MIT DICT (Aufgabe 1) IST WESENTLICH SCHNELLER!!
 sequence = "CGGAAGCGAGATTCGCGTGGCGTGATTCCGGCGGGCGTGGAGAAGCGAGATTCATTCAAGCCGGGAGGCGTGGCGTGGCGTGGCGTGCGGATTCAAGCCGGCGGGCGTGATTCGAGCGGCGGATTCGAGATTCCGGGCGTGCGGGCGTGAAGCGCGTGGAGGAGGCGTGGCGTGCGGGAGGAGAAGCGAGAAGCCGGATTCAAGCAAGCATTCCGGCGGGAGATTCGCGTGGAGGCGTGGAGGCGTGGAGGCGTGCGGCGGGAGATTCAAGCCGGATTCGCGTGGAGAAGCGAGAAGCGCGTGCGGAAGCGAGGAGGAGAAGCATTCGCGTGATTCCGGGAGATTCAAGCATTCGCGTGCGGCGGGAGATTCAAGCGAGGAGGCGTGAAGCAAGCAAGCAAGCGCGTGGCGTGCGGCGGGAGAAGCAAGCGCGTGATTCGAGCGGGCGTGCGGAAGCGAGCGG"
 k = 12
+if (k > len(sequence)):
+    print("Error, k > Sequence!")
 print("Input: ", sequence)
 print("Laenge des kmer: ", k)
 
@@ -24,13 +26,13 @@ def PatToNum(pattern): #mit PatToNum aus BA1L
 def NumToPat(number):
     quart_text = ""
     for i in range(len((number))):   # Notiz: i startet bei 0, geht bis len-1
-        if number[i] == "1":       # in "" da quart_number ein string ist
+        if number[i] == "0":       # in "" da quart_number ein string ist
             factor = "A"
-        elif number[i] == "2":
+        elif number[i] == "1":
             factor = "C"
-        elif number[i] == "3":
+        elif number[i] == "2":
             factor = "G"
-        elif number[i] == "4":
+        elif number[i] == "3":
             factor = "T"
         quart_text += factor
     return quart_text
@@ -44,6 +46,8 @@ def DecToQuart(dec_number):
         dec_number = int(dec_number / 4)
         quart_number = str(remainder) + quart_number
     return quart_number
+
+
 
 #frequencies List: (BA1K)
 kmer_frequencies = []
@@ -72,11 +76,13 @@ print("most freuquent (listenindex): ", indices(kmer_frequencies, max(kmer_frequ
 
 #dann noch NumToPat(i) for i in indices #num to pat abändern, sodass es list_index=>decimal=>quart=>pattern!
 for i in indices(kmer_frequencies, max(kmer_frequencies)):
-    for j in range(k):
-        i += 4 ** (k - j -1 )
+    # for j in range(k):
+    #     i += 4 ** (k - j -1)
+    # print("i: ", i)
     quart_number = int(DecToQuart(i))
+    for i in range(k - len(str(quart_number))):
+        quart_number = "0" + str(quart_number)
+    # print("QuartNumber: ", quart_number)
     print(NumToPat(str(quart_number)), end=" ")
 print()
 print("mit je", max(kmer_frequencies), "mal.")
-
-
